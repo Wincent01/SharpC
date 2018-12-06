@@ -1,0 +1,10 @@
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\bin\Debug\Sandbox.exe
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\bin\Debug\Sandbox.pdb
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\bin\Debug\SharpC.dll
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\bin\Debug\SharpC.pdb
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\obj\Debug\Sandbox.csprojAssemblyReference.cache
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\obj\Debug\Sandbox.csproj.CoreCompileInputs.cache
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\obj\Debug\Sandbox.csproj.CopyComplete
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\obj\Debug\Sandbox.exe
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\obj\Debug\Sandbox.pdb
+C:\Users\thewi\RiderProjects\SharpC\Sandbox\bin\Debug\Mono.Cecil.dll

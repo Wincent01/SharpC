@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpC", "SharpC\SharpC.csproj", "{70CCAA94-D392-425A-A017-9528783224AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Sandbox\Sandbox.csproj", "{0C6BA140-51D4-42E8-A63F-B98998EFB6B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70CCAA94-D392-425A-A017-9528783224AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70CCAA94-D392-425A-A017-9528783224AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70CCAA94-D392-425A-A017-9528783224AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70CCAA94-D392-425A-A017-9528783224AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C6BA140-51D4-42E8-A63F-B98998EFB6B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C6BA140-51D4-42E8-A63F-B98998EFB6B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C6BA140-51D4-42E8-A63F-B98998EFB6B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C6BA140-51D4-42E8-A63F-B98998EFB6B0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
