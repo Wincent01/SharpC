@@ -1,0 +1,14 @@
+C:\Users\thewi\RiderProjects\SharpC\SandboxLib\bin\Debug\SandboxLib.dll
+C:\Users\thewi\RiderProjects\SharpC\SandboxLib\bin\Debug\SandboxLib.pdb
+C:\Users\thewi\RiderProjects\SharpC\SandboxLib\obj\Debug\SandboxLib.csprojAssemblyReference.cache
+C:\Users\thewi\RiderProjects\SharpC\SandboxLib\obj\Debug\SandboxLib.csproj.CoreCompileInputs.cache
+C:\Users\thewi\RiderProjects\SharpC\SandboxLib\obj\Debug\SandboxLib.dll
+C:\Users\thewi\RiderProjects\SharpC\SandboxLib\obj\Debug\SandboxLib.pdb
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\obj\Debug\SandboxLib.dll
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\obj\Debug\SandboxLib.pdb
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\bin\Debug\SandboxLib.dll
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\bin\Debug\SandboxLib.pdb
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\obj\Debug\SandboxLib.csprojResolveAssemblyReference.cache
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\bin\Debug\SharpC.dll
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\bin\Debug\Mono.Cecil.dll
+C:\Users\wincent.holm\Desktop\SharpC\SandboxLib\bin\Debug\SharpC.pdb

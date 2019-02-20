@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{70CCAA94-D392-425A-A017-9528783224AB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpC</RootNamespace>
+    <AssemblyName>SharpC</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <LangVersion>7</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.10.1.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.1\lib\net40\Mono.Cecil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.10.1.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.1\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.10.1.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.1\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.10.1.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e">
+      <HintPath>..\packages\Mono.Cecil.0.10.1\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CMethodCover.cs" />
+    <Compile Include="CType.cs" />
+    <Compile Include="FileConstruct.cs" />
+    <Compile Include="Instructions\Br.cs" />
+    <Compile Include="Instructions\Call.cs" />
+    <Compile Include="Instructions\Callvirt.cs" />
+    <Compile Include="Instructions\Castclass.cs" />
+    <Compile Include="Instructions\Ceq.cs" />
+    <Compile Include="Instructions\CilInstruction.cs" />
+    <Compile Include="Instructions\CilThrow.cs" />
+    <Compile Include="Instructions\Conv.cs" />
+    <Compile Include="Instructions\Dup.cs" />
+    <Compile Include="Instructions\Isinst.cs" />
+    <Compile Include="Instructions\Ldarg.cs" />
+    <Compile Include="Instructions\Ldc.cs" />
+    <Compile Include="Instructions\Ldelem.cs" />
+    <Compile Include="Instructions\Ldelema.cs" />
+    <Compile Include="Instructions\Ldfld.cs" />
+    <Compile Include="Instructions\Ldind.cs" />
+    <Compile Include="Instructions\Ldlen.cs" />
+    <Compile Include="Instructions\Ldloc.cs" />
+    <Compile Include="Instructions\Ldnull.cs" />
+    <Compile Include="Instructions\Ldstr.cs" />
+    <Compile Include="Instructions\Ldtoken.cs" />
+    <Compile Include="Instructions\Newarr.cs" />
+    <Compile Include="Instructions\Newobj.cs" />
+    <Compile Include="Instructions\Nop.cs" />
+    <Compile Include="Instructions\Not.cs" />
+    <Compile Include="Instructions\Operations.cs" />
+    <Compile Include="Instructions\Pop.cs" />
+    <Compile Include="Instructions\Ret.cs" />
+    <Compile Include="Instructions\Starg.cs" />
+    <Compile Include="Instructions\Stelem.cs" />
+    <Compile Include="Instructions\Stfld.cs" />
+    <Compile Include="Instructions\Stind.cs" />
+    <Compile Include="Instructions\Stloc.cs" />
+    <Compile Include="Instructions\Switch.cs" />
+    <Compile Include="Instructions\Unbox.cs" />
+    <Compile Include="Instructions\Volatile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Visualizer.cs" />
+    <Compile Include="VisualizerState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+         Other similar extension points exist, see Microsoft.Common.targets.
+    <Target Name="BeforeBuild">
+    </Target>
+    <Target Name="AfterBuild">
+    </Target>
+    -->
+</Project>
