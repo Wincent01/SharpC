@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Reflection;
-using MethodBody = Mono.Cecil.Cil.MethodBody;
 
 namespace SharpC.Instructions
 {
@@ -12,10 +11,7 @@ namespace SharpC.Instructions
         {
             try
             {
-                if (((MethodInfo) body).ReturnType == typeof(void))
-                {
-                    return $"{Visualizer.Tabs}return;\n";
-                }
+                if (((MethodInfo) body).ReturnType == typeof(void)) return $"{Visualizer.Tabs}return;\n";
 
                 var parts = ((MethodInfo) body).ReturnType.Name.Split('.');
 

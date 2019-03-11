@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -8,7 +7,7 @@ namespace SharpC.Instructions
     public class Ldtoken : CilInstruction
     {
         public string Type;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Operand.Split('.');

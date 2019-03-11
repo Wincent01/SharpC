@@ -9,7 +9,7 @@ namespace SharpC.Instructions
     public class Ldarg : CilInstruction
     {
         private int _at;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Name.Split('.');
@@ -18,6 +18,7 @@ namespace SharpC.Instructions
                 _at = int.Parse(parts[1]);
                 return;
             }
+
             _at = parts[1] == "s" ? int.Parse(template.Operand) : int.Parse(parts[1]) - 1;
             if (_at < 0)
                 _at = 0;
@@ -28,19 +29,21 @@ namespace SharpC.Instructions
         {
             stack.Add(new ScopeVariable
             {
-                Value = body.IsStatic ? body.GetParameters()[_at].Name : _at == 0 ? "me" : body.GetParameters()[_at - 1].Name,
-                Type = body.IsStatic ? CType.Deserialize(body.GetParameters()[_at].ParameterType) : _at == 0 ? "void*" : CType.Deserialize(body.GetParameters()[_at - 1].ParameterType)
+                Value = body.IsStatic ? body.GetParameters()[_at].Name :
+                    _at == 0 ? "me" : body.GetParameters()[_at - 1].Name,
+                Type = body.IsStatic ? CType.Deserialize(body.GetParameters()[_at].ParameterType) :
+                    _at == 0 ? "void*" : CType.Deserialize(body.GetParameters()[_at - 1].ParameterType)
             });
             Console.WriteLine($"Parameter -> {stack[stack.Count - 1].Value} with {_at}");
             return "";
         }
     }
-    
+
     [Cil("ldarga")]
     public class Ldarga : CilInstruction
     {
         private string _arg;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             _arg = template.Operand;

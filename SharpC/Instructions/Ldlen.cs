@@ -11,7 +11,7 @@ namespace SharpC.Instructions
         {
             var obj = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
-            
+
             stack.Add(new ScopeVariable
             {
                 Type = "unsigned int",

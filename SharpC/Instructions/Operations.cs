@@ -25,73 +25,73 @@ namespace SharpC.Instructions
             return "";
         }
     }
-    
+
     [Cil("add")]
     public class Add : Operation
     {
         protected override string Code => "+";
     }
-    
+
     [Cil("sub")]
     public class Sub : Operation
     {
         protected override string Code => "-";
     }
-    
+
     [Cil("mul")]
     public class Mul : Operation
     {
         protected override string Code => "*";
     }
-    
+
     [Cil("div")]
     public class Div : Operation
     {
         protected override string Code => "/";
     }
-    
+
     [Cil("clt")]
     public class Clt : Operation
     {
         protected override string Code => "<";
     }
-    
+
     [Cil("cgt")]
     public class Cgt : Operation
     {
         protected override string Code => ">";
     }
-    
+
     [Cil("shl")]
     public class Shl : Operation
     {
         protected override string Code => "<<";
     }
-    
+
     [Cil("shr")]
     public class Shr : Operation
     {
         protected override string Code => ">>";
     }
-    
+
     [Cil("or")]
     public class Or : Operation
     {
         protected override string Code => "|";
     }
-    
+
     [Cil("and")]
     public class And : Operation
     {
         protected override string Code => "&";
     }
-    
+
     [Cil("xor")]
     public class Xor : Operation
     {
         protected override string Code => "^";
     }
-    
+
     [Cil("rem")]
     public class Rem : Operation
     {

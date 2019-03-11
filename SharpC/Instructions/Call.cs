@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Mono.Cecil;
@@ -8,12 +7,11 @@ namespace SharpC.Instructions
     [Cil("call")]
     public class Call : CilInstruction
     {
-        public string ObjName;
+        private ScopeInstruction _template;
 
         public string ClassName;
-        
-        private ScopeInstruction _template;
-        
+        public string ObjName;
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Operand.Split(':');
@@ -29,51 +27,48 @@ namespace SharpC.Instructions
             MethodBase body, int indite)
         {
             var method = (MethodReference) _template.Template.Operand;
-            
+
             MethodInfo func = null;
             foreach (var function in Visualizer.Functions)
-            {
                 if (function.Name == method.Name && method.Parameters.Count == function.GetParameters().Length)
                 {
                     var hold = true;
                     for (var index = 0; index < function.GetParameters().Length; index++)
                     {
                         var parameter = function.GetParameters()[index];
-                        if (parameter.ParameterType.FullName != method.Parameters[index].ParameterType.FullName)
-                        {
-                            hold = false;
-                            break;
-                        }
-                    }
-
-                    if (hold)
-                    {
-                        func = (MethodInfo) function;
+                        if (parameter.ParameterType.FullName == method.Parameters[index].ParameterType.FullName)
+                            continue;
+                        hold = false;
                         break;
                     }
+
+                    if (!hold) continue;
+                    func = (MethodInfo) function;
+                    break;
                 }
-            }
 
-            if (func == null)
-            {
-                return $"\n{Visualizer.Tabs}// Unknown function call -> {_template}\n";
-            }
+            if (func == null) return $"\n{Visualizer.Tabs}// Unknown function call -> {_template}\n";
 
-            if (ObjName.StartsWith("op_"))
-            {
-                Console.Write(0);
-            }
-            
             var pars = new List<string>();
-            for (var i = 0; i < func.GetParameters().Length; i++)
+            var parLength = func.GetParameters().Length;
+            for (var i = parLength; i > 0; i--) pars.Add(stack[stack.Count - i].Value);
+
+            for (var i = 0; i < parLength; i++) stack.RemoveAt(stack.Count - 1);
+
+            var cover = func.GetCustomAttribute<CMethodCoverAttribute>();
+
+            if (cover != null)
             {
-                pars.Add(stack[stack.Count - 1].Value);
-                stack.RemoveAt(stack.Count - 1);
+                stack.Add(new ScopeVariable
+                {
+                    Type = $"{CType.Deserialize(func.ReturnType)}",
+                    Value = $"{cover.Method}({string.Join(", ", pars)})"
+                });
+                return "";
             }
 
             if (!func.IsStatic)
             {
-
                 var obj = stack[stack.Count - 1];
                 stack.RemoveAt(stack.Count - 1);
 
@@ -86,8 +81,10 @@ namespace SharpC.Instructions
                     {
                         Type = $"{CType.Deserialize(func.ReturnType)}",
                         Value =
-                            $"{(isStruct ? "" : $"((struct {func.DeclaringType.Name}*)")} {obj.Value}{(isStruct ? "" : ")")}->" +
-                            $"{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Concat(pars)}{(pars.Count > 0 ? "," : "")}{obj.Value})"
+                            $"{(isStruct ? "" : $"((struct {func.DeclaringType.Name}*)")} " +
+                            $"{obj.Value}{(isStruct ? "" : ")")}->" +
+                            $"{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                            $"({string.Join(", ", pars)}{(pars.Count > 0 ? "," : "")}{obj.Value})"
                     };
                     stack.Add(variable);
                 }
@@ -95,29 +92,31 @@ namespace SharpC.Instructions
                 {
                     if (func.DeclaringType != null)
                         return
-                            $"\t{(isStruct ? "" : $"((struct {func.DeclaringType.Name}*)")} {obj.Value}{(isStruct ? "" : ")")}->" +
-                            $"{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Concat(pars)}{(pars.Count > 0 ? "," : "")}{obj.Value});\n";
+                            $"\t{(isStruct ? "" : $"((struct {func.DeclaringType.Name}*)")} " +
+                            $"{obj.Value}{(isStruct ? "" : ")")}->" +
+                            $"{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                            $"({string.Join(", ", pars)}{(pars.Count > 0 ? "," : "")}{obj.Value});\n";
                 }
 
                 return "";
             }
+
+            if (func.ReturnType != typeof(void))
+            {
+                var variable = new ScopeVariable
+                {
+                    Type = $"{CType.Deserialize(func.ReturnType)}",
+                    Value =
+                        $"{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                        $"({string.Join(", ", pars)})"
+                };
+                stack.Add(variable);
+            }
             else
             {
-                if (func.ReturnType != typeof(void))
-                {
-                    var variable = new ScopeVariable
-                    {
-                        Type = $"{CType.Deserialize(func.ReturnType)}",
-                        Value =
-                            $"{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Join(", ",pars)})"
-                    };
-                    stack.Add(variable);
-                }
-                else
-                {
-                    return
-                        $"\t{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Join(", ",pars)});\n";
-                }
+                return
+                    $"\t{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                    $"({string.Join(", ", pars)});\n";
             }
 
             return "";

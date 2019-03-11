@@ -7,6 +7,7 @@ namespace SharpC.Instructions
     public class Ldstr : CilInstruction
     {
         public string Value;
+
         public override void Serialize(ScopeInstruction template)
         {
             Value = template.Operand.Trim('"');

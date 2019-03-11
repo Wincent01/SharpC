@@ -1,5 +1,4 @@
-﻿using System;
-using SandboxLib;
+﻿using SandboxLib;
 using SharpC;
 
 namespace Sandbox

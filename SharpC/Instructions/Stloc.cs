@@ -8,7 +8,7 @@ namespace SharpC.Instructions
     public class Stloc : CilInstruction
     {
         public int Point;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             if (template.Operand.Contains("V"))
@@ -20,7 +20,8 @@ namespace SharpC.Instructions
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
             MethodBase body, int indite)
         {
-            Visualizer.Variables[Point] = new ScopeVariable {Value = $"var{Point}", Type = Visualizer.Variables[Point].Type};
+            Visualizer.Variables[Point] = new ScopeVariable
+                {Value = $"var{Point}", Type = Visualizer.Variables[Point].Type};
             var item = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
 

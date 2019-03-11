@@ -6,9 +6,9 @@ namespace SharpC.Instructions
     [Cil("ldelem")]
     public class Ldelem : CilInstruction
     {
-        public string Type;
         public bool Ref;
-        
+        public string Type;
+
         public override void Serialize(ScopeInstruction template)
         {
             if (template.Name.Split('.')[1] == "ref")
@@ -16,6 +16,7 @@ namespace SharpC.Instructions
                 Ref = true;
                 return;
             }
+
             Type = CType.ResolveConv(template.Name.Split('.')[1]);
         }
 
@@ -27,11 +28,8 @@ namespace SharpC.Instructions
             var array = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
 
-            if (Ref)
-            {
-                Type = array.Type.Remove(array.Type.Length - 1);
-            }
-            
+            if (Ref) Type = array.Type.Remove(array.Type.Length - 1);
+
             stack.Add(new ScopeVariable
             {
                 Type = Type,

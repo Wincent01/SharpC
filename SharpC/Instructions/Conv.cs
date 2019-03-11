@@ -7,7 +7,7 @@ namespace SharpC.Instructions
     public class Conv : CilInstruction
     {
         public string ConvCode;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Name.Split('.');

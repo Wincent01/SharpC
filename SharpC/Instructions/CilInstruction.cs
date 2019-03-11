@@ -8,7 +8,6 @@ namespace SharpC.Instructions
     {
         public virtual void Serialize(ScopeInstruction template)
         {
-            
         }
 
         public virtual string Deserialize(IList<ScopeVariable> stack,
@@ -22,7 +21,7 @@ namespace SharpC.Instructions
     public class CilAttribute : Attribute
     {
         public string Name;
-        
+
         public CilAttribute(string name)
         {
             Name = name;

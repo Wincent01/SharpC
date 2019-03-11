@@ -1,33 +1,27 @@
-﻿using System;
-using SharpC;
+﻿using SharpC;
 
 namespace SandboxLib
 {
     public class Main
     {
-        public int Add(int a, int b)
+        public void Entry()
         {
-            return a + b;
+            object i = null;
+            i = CMethods.Realloc(i, 10 * sizeof(char));
+            LotsOfPars(54324, i, 'f', null, this);
         }
 
-        public ulong Add(ulong a, ulong b)
+        public void LotsOfPars(long ree, object ria, char rep, string[] pointers, Main self)
         {
-            return a + b;
         }
     }
 
-    public class Sign
+    public static class CMethods
     {
-        public int Signature;
-        
-        public Sign(int i)
+        [CMethodCover("realloc")]
+        public static object Realloc(object obj, uint newSize)
         {
-            Signature = i;
-        }
-
-        public int ToUlong()
-        {
-            return new Main().Add(Signature, 8);
+            return obj;
         }
     }
 }

@@ -8,12 +8,12 @@ namespace SharpC.Instructions
     public class Stfld : CilInstruction
     {
         public string Field;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             Field = template.Operand.Split(':')[2];
         }
-        
+
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
             MethodBase body, int indite)
         {

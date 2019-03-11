@@ -6,9 +6,9 @@ namespace SharpC.Instructions
     [Cil("newarr")]
     public class Newarr : CilInstruction
     {
-        public string Type;
         private ScopeInstruction _template;
-        
+        public string Type;
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Operand.Split('.');
@@ -23,7 +23,7 @@ namespace SharpC.Instructions
             stack.RemoveAt(stack.Count - 1);
 
             var type = CType.Deserialize(Type);
-            
+
             stack.Add(new ScopeVariable
             {
                 Type = $"{type}*",

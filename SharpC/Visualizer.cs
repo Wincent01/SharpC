@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,25 +14,9 @@ namespace SharpC
         public static Type[] Types;
         public static List<MethodBase> Functions;
 
-        #region Instruction Variables
+        public static string Tabs;
 
-        public static readonly Dictionary<string, Type> RegisteredInstructions = new Dictionary<string, Type>();
-        public static uint FuncCount;
-        public static Dictionary<string, LabelStruct> Lables;
-        public static List<ScopeVariable> Variables = new List<ScopeVariable>();
-        public static int Index;
-        public static bool FirstPass;
-
-        #endregion
-
-        #region Deserilize Variables
-
-        public static readonly List<CFunction> CFunctions = new List<CFunction>();
-        public static readonly List<CClass> CClasses = new List<CClass>();
-        public static readonly List<CConstructor> CConstructors = new List<CConstructor>();
-        public static readonly List<CEnum> CEnums = new List<CEnum>();
-
-        #endregion
+        public static readonly List<string> RegisteredLabels = new List<string>();
 
         public static void Init(Assembly assembly, params Type[] includes)
         {
@@ -56,10 +39,8 @@ namespace SharpC
         public static void Convert()
         {
             foreach (var type in Types)
-            {
                 if (type.IsClass)
                     RegisterClass(type);
-            }
         }
 
         private static void RegisterClass(Type type)
@@ -92,59 +73,30 @@ namespace SharpC
                 {
                     CClasses.Add(new CClass(type));
 
-                    foreach (var method in type.GetMethods())
-                    {
-                        CFunctions.Add(new CFunction(method, type));
-                    }
+                    foreach (var method in type.GetMethods()) CFunctions.Add(new CFunction(method, type));
 
                     foreach (var constructor in type.GetConstructors())
-                    {
                         CConstructors.Add(new CConstructor(constructor, type));
-                    }
                 }
-                if (type.IsEnum)
-                {
-                    CEnums.Add(new CEnum(type));
-                }
+                if (type.IsEnum) CEnums.Add(new CEnum(type));
             }
 
-            foreach (var cEnum in CEnums)
-            {
-                FileConstruct.Write(cEnum.DefEnum);
-            }
+            foreach (var cEnum in CEnums) FileConstruct.Write(cEnum.DefEnum);
 
-            foreach (var cClass in CClasses)
-            {
-                FileConstruct.Write(cClass.Structure);
-            }
+            foreach (var cClass in CClasses) FileConstruct.Write(cClass.Structure);
 
-            foreach (var function in CFunctions)
-            {
-                FileConstruct.Write(function.Declaration);
-            }
-            
-            foreach (var function in CConstructors)
-            {
-                FileConstruct.Write(function.Declaration);
-            }
-            
-            foreach (var function in CFunctions)
-            {
-                FileConstruct.Write(function.Definition);
-            }
-            
-            foreach (var function in CConstructors)
-            {
-                FileConstruct.Write(function.Definition);
-            }
+            foreach (var function in CFunctions) FileConstruct.Write(function.Declaration);
+
+            foreach (var function in CConstructors) FileConstruct.Write(function.Declaration);
+
+            foreach (var function in CFunctions) FileConstruct.Write(function.Definition);
+
+            foreach (var function in CConstructors) FileConstruct.Write(function.Definition);
         }
 
         public static IEnumerable<string> BuildBody(MethodBase body)
         {
-            foreach (var parameter in body.GetParameters())
-            {
-                Console.WriteLine($"PAR: {parameter}");
-            }
+            foreach (var parameter in body.GetParameters()) Console.WriteLine($"PAR: {parameter}");
 
             Console.WriteLine($"Building function {body.Name}");
             var assembly = AssemblyDefinition.ReadAssembly(body.DeclaringType?.Assembly.Location);
@@ -163,7 +115,9 @@ namespace SharpC
             var method = (MethodDefinition) null;
             foreach (var me in toInspect)
             {
-                if (body.DeclaringType != null && (me.m.Name != body.Name || body.GetParameters().Length != me.m.Parameters.Count || me.t.FullName != body.DeclaringType.FullName)) continue;
+                if (body.DeclaringType != null && (me.m.Name != body.Name ||
+                                                   body.GetParameters().Length != me.m.Parameters.Count ||
+                                                   me.t.FullName != body.DeclaringType.FullName)) continue;
                 var hold = true;
                 for (var index = 0; index < body.GetParameters().Length; index++)
                 {
@@ -180,11 +134,8 @@ namespace SharpC
                 }
             }
 
-            if (!decleared)
-            {
-                yield break;
-            }
-            
+            if (!decleared) yield break;
+
             for (var index = 0; index < method.Body.Instructions.Count; index++)
             {
                 var instruction = method.Body.Instructions[index];
@@ -222,20 +173,7 @@ namespace SharpC
             }
 
             FuncCount++;
-            foreach (var str in BuildScope(new List<ScopeVariable>(), instr, body, 1, 0))
-            {
-                yield return str;
-            }
-        }
-
-        public static string Tabs;
-
-        public static readonly List<string> RegisteredLabels = new List<string>();
-
-        public struct LabelStruct
-        {
-            public List<ScopeInstruction> Instructions;
-            public List<ScopeVariable> Variables;
+            foreach (var str in BuildScope(new List<ScopeVariable>(), instr, body, 1, 0)) yield return str;
         }
 
         private static IEnumerable<string> BuildScope(IList<ScopeVariable> stack,
@@ -252,12 +190,12 @@ namespace SharpC
                     if (Index > instructions.Count - 1) break;
                     Tabs = string.Concat(Enumerable.Repeat('\t', indite));
                     var instruction = instructions[Index];
-                    
-                   //yld += $"/*\n" +
-                   //       $" * {string.Join(" | ", stack)}\n" +
-                   //       $" */\n" +
-                   //       $"\n\t//{instruction.Name} -> {instruction.Operand}\n";
-                    
+
+                    //yld += $"/*\n" +
+                    //       $" * {string.Join(" | ", stack)}\n" +
+                    //       $" */\n" +
+                    //       $"\n\t//{instruction.Name} -> {instruction.Operand}\n";
+
                     var instructionType = instruction.Name.Split('.')[0].ToLower();
 
                     Console.WriteLine($"[{instruction.Offset}][{Index}] {instruction.Name} -> {instruction.Operand}");
@@ -289,6 +227,32 @@ namespace SharpC
                     yield return s;
             }
         }
+
+        public struct LabelStruct
+        {
+            public List<ScopeInstruction> Instructions;
+            public List<ScopeVariable> Variables;
+        }
+
+        #region Instruction Variables
+
+        public static readonly Dictionary<string, Type> RegisteredInstructions = new Dictionary<string, Type>();
+        public static uint FuncCount;
+        public static Dictionary<string, LabelStruct> Lables;
+        public static List<ScopeVariable> Variables = new List<ScopeVariable>();
+        public static int Index;
+        public static bool FirstPass;
+
+        #endregion
+
+        #region Deserilize Variables
+
+        public static readonly List<CFunction> CFunctions = new List<CFunction>();
+        public static readonly List<CClass> CClasses = new List<CClass>();
+        public static readonly List<CConstructor> CConstructors = new List<CConstructor>();
+        public static readonly List<CEnum> CEnums = new List<CEnum>();
+
+        #endregion
     }
 
     public struct ScopeInstruction
@@ -305,10 +269,10 @@ namespace SharpC
         }
     }
 
-    public struct ScopeVariable
+    public class ScopeVariable
     {
-        public string Value;
         public string Type;
+        public string Value;
 
         public override string ToString()
         {
@@ -325,12 +289,11 @@ namespace SharpC
         {
             Declaration = "";
             Definition = "";
+            if (function.GetCustomAttribute<CMethodCoverAttribute>() != null ||
+                function.DeclaringType.IsAbstract) return;
 
-            if (function.GetCustomAttribute<CMethodCoverAttribute>() != null)
-            {
-                return;
-            }
-            
+            if (function.GetCustomAttribute<CMethodCoverAttribute>() != null) return;
+
             var pars = function.GetParameters().Select(parameter =>
                 $"{CType.Deserialize(parameter.ParameterType)} {parameter.Name}").ToList();
 
@@ -344,13 +307,11 @@ namespace SharpC
                     {
                         var parameter = function.GetParameters()[index];
                         if (parameter.ParameterType.Name == generic.Name)
-                        {
                             pars[index] = $"{genericTypes[i]} {parameter.Name}";
-                        }
                     }
                 }
             }
-            
+
             var parts = function.ReturnType.Name.Split('.');
 
             /*
@@ -405,10 +366,7 @@ namespace SharpC
             }
 
             Visualizer.FirstPass = false;
-            foreach (var line in Visualizer.BuildBody(function))
-            {
-                Definition += line;
-            }
+            foreach (var line in Visualizer.BuildBody(function)) Definition += line;
 
             Definition += "}\n\n";
         }
@@ -421,7 +379,8 @@ namespace SharpC
         public CClass(Type type, string[] genericTypes = null)
         {
             Structure = "";
-            
+            if (type.IsAbstract) return;
+
             if (type.Name.Contains("<") || type.Name.Contains("`"))
             {
                 Console.WriteLine($"Unsupported and/or generic type {type.Name}");
@@ -431,7 +390,7 @@ namespace SharpC
             Structure += $"typedef struct {type.Name}\n" + "{\n";
             var funcs = type.GetMethods().ToList();
             funcs.AddRange(type.GetMethods(BindingFlags.NonPublic));
-            
+
             var methodList = (from method in type.GetMethods()
                 where type.BaseType != null
                 from info in type.BaseType?.GetMethods()
@@ -440,14 +399,13 @@ namespace SharpC
 
             foreach (var method in type.GetMethods())
             {
+                if (method.GetCustomAttribute<CMethodCoverAttribute>() != null) return;
                 if (type.BaseType != null)
                 {
                     var none = true;
                     foreach (var info in type.BaseType.GetMethods())
-                    {
                         if (method.GetBaseDefinition() == info)
                             none = false;
-                    }
                     if (none)
                         methodList.Add(method);
                 }
@@ -456,18 +414,17 @@ namespace SharpC
                     methodList.Add(method);
                 }
             }
-            
+
             foreach (var method in methodList)
             {
                 if (method.IsStatic) continue;
                 try
                 {
                     var parts = method.ReturnType.Name.Split('.');
-                    Structure += $"\t{CType.Deserialize(parts[parts.Length - 1])} (*{method.Name}{Visualizer.Additional(method, type)})(";
+                    Structure +=
+                        $"\t{CType.Deserialize(parts[parts.Length - 1])} (*{method.Name}{Visualizer.Additional(method, type)})(";
                     foreach (var parameter in method.GetParameters())
-                    {
                         Structure += $"{CType.Deserialize(parameter.ParameterType)} {parameter.Name}";
-                    }
 
                     if (!method.IsStatic)
                     {
@@ -508,11 +465,11 @@ namespace SharpC
     public struct CEnum
     {
         public string DefEnum;
-        
+
         public CEnum(Type type)
         {
             DefEnum = $"enum {type.Name}\n" + "{\n";
-            
+
             var names = Enum.GetNames(type);
             var values = Enum.GetValues(type);
             var i = 0;
@@ -525,22 +482,23 @@ namespace SharpC
             DefEnum += "};\n\n";
         }
     }
-    
+
     public struct CConstructor
     {
         public string Declaration;
         public string Definition;
-        
+
         public CConstructor(MethodBase function, Type cls)
         {
             Declaration = "";
             Definition = "";
-            
+
             var pars = function.GetParameters().Select(parameter =>
                 $"{CType.Deserialize(parameter.ParameterType)} {parameter.Name}").ToList();
 
             if (function.DeclaringType == null) return;
-            Definition += $"struct {function.DeclaringType.Name}* new{function.DeclaringType.Name}{Visualizer.Additional(function, cls)} (";
+            Definition +=
+                $"struct {function.DeclaringType.Name}* new{function.DeclaringType.Name}{Visualizer.Additional(function, cls)} (";
             foreach (var par in pars)
             {
                 Definition += $"{par}";
@@ -556,21 +514,20 @@ namespace SharpC
                 foreach (var method in function.DeclaringType.GetMethods())
                 {
                     if (method.IsConstructor || method.IsStatic) continue;
-                    Definition += $"\n\tme->{method.Name}{Visualizer.Additional(method, cls)} = &{function.DeclaringType.Name + method.Name}{Visualizer.Additional(method, cls)};";
+                    Definition +=
+                        $"\n\tme->{method.Name}{Visualizer.Additional(method, cls)} = &{function.DeclaringType.Name + method.Name}{Visualizer.Additional(method, cls)};";
                 }
 
                 Definition += "\n";
                 Visualizer.FirstPass = false;
-                foreach (var line in Visualizer.BuildBody(function))
-                {
-                    Definition += line;
-                }
+                foreach (var line in Visualizer.BuildBody(function)) Definition += line;
             }
 
             Definition += "\n\treturn me;";
             Definition += "\n}\n\n";
-            
-            Declaration += $"struct {function.DeclaringType.Name}* new{function.DeclaringType.Name}{Visualizer.Additional(function, cls)} (";
+
+            Declaration +=
+                $"struct {function.DeclaringType.Name}* new{function.DeclaringType.Name}{Visualizer.Additional(function, cls)} (";
             foreach (var par in pars)
             {
                 Declaration += $"{par}";

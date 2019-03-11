@@ -23,7 +23,7 @@ namespace SharpC.Instructions
             return "";
         }
     }
-    
+
     [Cil("ldloca")]
     public class Ldloca : CilInstruction
     {
@@ -34,13 +34,12 @@ namespace SharpC.Instructions
             if (template.Operand.Contains("V"))
             {
                 Point = int.Parse(template.Operand.Split('_')[1]) - 1;
-                if (Point < 0)
-                {
-                    Point = 0;
-                }
+                if (Point < 0) Point = 0;
             }
             else
+            {
                 Point = int.Parse(template.Name.Split('.')[1]);
+            }
         }
 
         public override string Deserialize(IList<ScopeVariable> stack,

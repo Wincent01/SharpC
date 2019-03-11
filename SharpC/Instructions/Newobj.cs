@@ -7,7 +7,7 @@ namespace SharpC.Instructions
     public class Newobj : CilInstruction
     {
         public string ObjName;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Operand.Split(':');

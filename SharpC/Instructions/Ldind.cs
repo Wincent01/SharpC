@@ -7,6 +7,7 @@ namespace SharpC.Instructions
     public class Ldind : CilInstruction
     {
         public string Type;
+
         public override void Serialize(ScopeInstruction template)
         {
             Type = CType.ResolveConv(template.Name.Split('.')[1]);

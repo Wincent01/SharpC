@@ -4,8 +4,8 @@ namespace SharpC
 {
     public class CMethodCoverAttribute : Attribute
     {
-        public string Method;
-        
+        public readonly string Method;
+
         public CMethodCoverAttribute(string method)
         {
             Method = method;

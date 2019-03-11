@@ -8,12 +8,11 @@ namespace SharpC.Instructions
     [Cil("callvirt")]
     public class Callvirt : CilInstruction
     {
-        public string ObjName;
+        private ScopeInstruction _template;
 
         public string ClassName;
-        
-        private ScopeInstruction _template;
-        
+        public string ObjName;
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Operand.Split(':');
@@ -29,10 +28,9 @@ namespace SharpC.Instructions
             MethodBase body, int indite)
         {
             var method = (MethodReference) _template.Template.Operand;
-            
+
             MethodInfo func = null;
             foreach (var function in Visualizer.Functions)
-            {
                 if (function.Name == method.Name && method.Parameters.Count == function.GetParameters().Length)
                 {
                     var hold = true;
@@ -52,18 +50,11 @@ namespace SharpC.Instructions
                         break;
                     }
                 }
-            }
 
-            if (func == null)
-            {
-                return $"\n{Visualizer.Tabs}// Unknown function call -> {_template}\n";
-            }
+            if (func == null) return $"\n{Visualizer.Tabs}// Unknown function call -> {_template}\n";
 
-            if (ObjName.StartsWith("op_"))
-            {
-                Console.Write(0);
-            }
-            
+            if (ObjName.StartsWith("op_")) Console.Write(0);
+
             var pars = new List<string>();
             for (var i = 0; i < func.GetParameters().Length; i++)
             {
@@ -73,7 +64,6 @@ namespace SharpC.Instructions
 
             if (!func.IsStatic)
             {
-
                 var obj = stack[stack.Count - 1];
                 stack.RemoveAt(stack.Count - 1);
 
@@ -101,23 +91,21 @@ namespace SharpC.Instructions
 
                 return "";
             }
+
+            if (func.ReturnType != typeof(void))
+            {
+                var variable = new ScopeVariable
+                {
+                    Type = $"{CType.Deserialize(func.ReturnType)}",
+                    Value =
+                        $"{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Join(", ", pars)})"
+                };
+                stack.Add(variable);
+            }
             else
             {
-                if (func.ReturnType != typeof(void))
-                {
-                    var variable = new ScopeVariable
-                    {
-                        Type = $"{CType.Deserialize(func.ReturnType)}",
-                        Value =
-                            $"{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Join(", ",pars)})"
-                    };
-                    stack.Add(variable);
-                }
-                else
-                {
-                    return
-                        $"\t{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Join(", ",pars)});\n";
-                }
+                return
+                    $"\t{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}({string.Join(", ", pars)});\n";
             }
 
             return "";

@@ -8,7 +8,7 @@ namespace SharpC.Instructions
     public class Ldfld : CilInstruction
     {
         public string Field;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             Field = template.Operand.Split(':')[2];
@@ -29,16 +29,16 @@ namespace SharpC.Instructions
                 }
 
             Console.WriteLine($"Field {Field} -> {type}");
-            stack.Add(new ScopeVariable{Value = $"{obj.Value}->{Field}", Type = type});
+            stack.Add(new ScopeVariable {Value = $"{obj.Value}->{Field}", Type = type});
             return "";
         }
     }
-    
+
     [Cil("ldsfld")]
     public class Ldsfld : CilInstruction
     {
         public string Field;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             Field = template.Operand.Split(':')[2];
@@ -57,7 +57,7 @@ namespace SharpC.Instructions
                 }
 
             Console.WriteLine($"Field {Field} -> {type}");
-            stack.Add(new ScopeVariable{Value = $"{Field}", Type = type});
+            stack.Add(new ScopeVariable {Value = $"{Field}", Type = type});
             return "";
         }
     }

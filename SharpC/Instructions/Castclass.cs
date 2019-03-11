@@ -7,7 +7,7 @@ namespace SharpC.Instructions
     public class Castclass : CilInstruction
     {
         public string CastClass;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Operand.Split('.');
@@ -22,10 +22,10 @@ namespace SharpC.Instructions
 
             stack.Add(new ScopeVariable
             {
-                Value = $"({CastClass}) ({obj.Value})", 
+                Value = $"({CastClass}) ({obj.Value})",
                 Type = $"{CastClass}"
             });
-            
+
             return "";
         }
     }

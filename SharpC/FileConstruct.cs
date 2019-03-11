@@ -5,7 +5,8 @@ namespace SharpC
 {
     public static class FileConstruct
     {
-        public static readonly string FilePath = $"{Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)}\\visualized.c";
+        public static readonly string FilePath =
+            $"{Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)}\\visualized.c";
 
         public static void Write(string line)
         {

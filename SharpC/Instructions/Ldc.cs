@@ -7,7 +7,7 @@ namespace SharpC.Instructions
     public class Ldc : CilInstruction
     {
         private ScopeInstruction _instruction;
-        
+
         public override void Serialize(ScopeInstruction template)
         {
             _instruction = template;
