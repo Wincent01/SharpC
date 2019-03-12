@@ -4,32 +4,39 @@ using Mono.Cecil;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Call a function.
+    /// </summary>
     [Cil("call")]
     public class Call : CilInstruction
     {
         private ScopeInstruction _template;
 
-        public string ClassName;
-        public string ObjName;
+        private string _className;
+        private string _objName;
 
         public override void Serialize(ScopeInstruction template)
         {
             var parts = template.Operand.Split(':');
-            ObjName = parts[2].Split('(')[0].Split('<')[0];
+            _objName = parts[2].Split('(')[0].Split('<')[0];
 
             var clsParts = parts[0].Split('.');
-            ClassName = clsParts[clsParts.Length - 1];
+            _className = clsParts[clsParts.Length - 1];
 
             _template = template;
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var method = (MethodReference) _template.Template.Operand;
 
+            /*
+             * Find method info.
+             */
             MethodInfo func = null;
-            foreach (var function in Visualizer.Functions)
+            foreach (var function in Visualizer.Methods)
                 if (function.Name == method.Name && method.Parameters.Count == function.GetParameters().Length)
                 {
                     var hold = true;
@@ -47,7 +54,7 @@ namespace SharpC.Instructions
                     break;
                 }
 
-            if (func == null) return $"\n{Visualizer.Tabs}// Unknown function call -> {_template}\n";
+            if (func == null) return $"\n\t// Unknown function call -> {_template}\n";
 
             var pars = new List<string>();
             var parLength = func.GetParameters().Length;
@@ -67,6 +74,9 @@ namespace SharpC.Instructions
                 return "";
             }
 
+            /*
+             * Check if the method is static or not, to know if has to pop from stack.
+             */
             if (!func.IsStatic)
             {
                 var obj = stack[stack.Count - 1];
@@ -83,7 +93,7 @@ namespace SharpC.Instructions
                         Value =
                             $"{(isStruct ? "" : $"((struct {func.DeclaringType.Name}*)")} " +
                             $"{obj.Value}{(isStruct ? "" : ")")}->" +
-                            $"{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                            $"{_objName}{Visualizer.Additional(func, func.DeclaringType)}" +
                             $"({string.Join(", ", pars)}{(pars.Count > 0 ? "," : "")}{obj.Value})"
                     };
                     stack.Add(variable);
@@ -94,7 +104,7 @@ namespace SharpC.Instructions
                         return
                             $"\t{(isStruct ? "" : $"((struct {func.DeclaringType.Name}*)")} " +
                             $"{obj.Value}{(isStruct ? "" : ")")}->" +
-                            $"{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                            $"{_objName}{Visualizer.Additional(func, func.DeclaringType)}" +
                             $"({string.Join(", ", pars)}{(pars.Count > 0 ? "," : "")}{obj.Value});\n";
                 }
 
@@ -107,7 +117,7 @@ namespace SharpC.Instructions
                 {
                     Type = $"{CType.Deserialize(func.ReturnType)}",
                     Value =
-                        $"{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                        $"{_className}{_objName}{Visualizer.Additional(func, func.DeclaringType)}" +
                         $"({string.Join(", ", pars)})"
                 };
                 stack.Add(variable);
@@ -115,7 +125,7 @@ namespace SharpC.Instructions
             else
             {
                 return
-                    $"\t{ClassName}{ObjName}{Visualizer.Additional(func, func.DeclaringType)}" +
+                    $"\t{_className}{_objName}{Visualizer.Additional(func, func.DeclaringType)}" +
                     $"({string.Join(", ", pars)});\n";
             }
 

@@ -4,6 +4,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push argument onto stack???
+    /// </summary>
     [Cil("starg")]
     public class Starg : CilInstruction
     {
@@ -15,7 +19,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var type = CType.Deserialize(body.GetParameters().Where(t => t.Name == _instruction.Operand).GetType());
             stack.Add(new ScopeVariable {Value = _instruction.Operand, Type = type});

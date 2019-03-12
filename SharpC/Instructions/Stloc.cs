@@ -4,29 +4,32 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Pop top stack stack value onto a variable.
+    /// </summary>
     [Cil("stloc")]
     public class Stloc : CilInstruction
     {
-        public int Point;
+        private int _point;
 
         public override void Serialize(ScopeInstruction template)
         {
             if (template.Operand.Contains("V"))
-                Point = int.Parse(template.Operand.Split('_')[1]) - 1;
+                _point = int.Parse(template.Operand.Split('_')[1]) - 1;
             else
-                Point = int.Parse(template.Name.Split('.')[1]);
+                _point = int.Parse(template.Name.Split('.')[1]);
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
-            Visualizer.Variables[Point] = new ScopeVariable
-                {Value = $"var{Point}", Type = Visualizer.Variables[Point].Type};
+            Visualizer.Variables[_point] = new ScopeVariable
+                {Value = $"var{_point}", Type = Visualizer.Variables[_point].Type};
             var item = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
 
-            Console.WriteLine($"{Visualizer.Variables[Point].Type}");
-            return $"{Visualizer.Tabs}var{Point} = ({Visualizer.Variables[Point].Type}) ({item.Value});\n";
+            return $"\tvar{_point} = ({Visualizer.Variables[_point].Type}) ({item.Value});\n";
         }
     }
 }

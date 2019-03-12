@@ -2,26 +2,28 @@
 
 namespace SandboxLib
 {
-    public class Main
+    /*
+     * Just to demonstrate, no use.
+     */
+    
+    public class TestingClass
     {
-        public void Entry()
+        public long Value;
+        
+        public TestingClass()
         {
-            object i = null;
-            i = CMethods.Realloc(i, 10 * sizeof(char));
-            LotsOfPars(54324, i, 'f', null, this);
+            Value = (long) 554e5;
         }
 
-        public void LotsOfPars(long ree, object ria, char rep, string[] pointers, Main self)
+        public void Method()
         {
+            OtherMethod(6, 64323);
         }
-    }
 
-    public static class CMethods
-    {
-        [CMethodCover("realloc")]
-        public static object Realloc(object obj, uint newSize)
+        public long OtherMethod(int first, int second)
         {
-            return obj;
+            Value -= second;
+            return (first << ~(5 ^ second)) * Value;
         }
     }
 }

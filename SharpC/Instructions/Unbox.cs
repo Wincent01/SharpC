@@ -7,10 +7,10 @@ namespace SharpC.Instructions
     public class Unbox : CilInstruction
     {
         /*
-         * TODO: Somehow fix this
+         * TODO: Find out what this Instruction does???
          */
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             stack.Add(new ScopeVariable
             {

@@ -3,11 +3,15 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push value address at index of array onto stack.
+    /// </summary>
     [Cil("ldelema")]
     public class Ldelema : CilInstruction
     {
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var index = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -17,7 +21,7 @@ namespace SharpC.Instructions
             stack.Add(new ScopeVariable
             {
                 Type = array.Type,
-                Value = $"{array.Value}[{index.Value}]"
+                Value = $"&({array.Value}[{index.Value}])"
             });
 
             return "";

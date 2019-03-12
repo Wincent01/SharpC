@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push string onto stack.
+    /// </summary>
     [Cil("ldstr")]
     public class Ldstr : CilInstruction
     {
@@ -14,7 +18,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             stack.Add(new ScopeVariable
             {

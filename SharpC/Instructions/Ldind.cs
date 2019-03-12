@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push converted value stack value onto stack.
+    /// </summary>
     [Cil("ldind")]
     public class Ldind : CilInstruction
     {
@@ -14,7 +18,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var conv = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);

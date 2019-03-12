@@ -3,14 +3,18 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Test if object is of type
+    /// </summary>
     [Cil("isinst")]
     public class Isinst : CilInstruction
     {
         /*
-         * TODO: Somehow fix this
+         * I have no idea how I could do this in C at the moment.
          */
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             stack.Add(new ScopeVariable
             {

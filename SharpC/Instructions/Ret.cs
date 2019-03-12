@@ -3,21 +3,25 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Return
+    /// </summary>
     [Cil("ret")]
     public class Ret : CilInstruction
     {
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             try
             {
-                if (((MethodInfo) body).ReturnType == typeof(void)) return $"{Visualizer.Tabs}return;\n";
+                if (((MethodInfo) body).ReturnType == typeof(void)) return $"\treturn;\n";
 
                 var parts = ((MethodInfo) body).ReturnType.Name.Split('.');
 
                 var ret = stack[stack.Count - 1].Value;
                 stack.Clear();
-                return $"{Visualizer.Tabs}return ({CType.Deserialize(parts[parts.Length - 1])})" +
+                return $"\treturn ({CType.Deserialize(parts[parts.Length - 1])})" +
                        $" ({ret});\n";
             }
             catch

@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Create new array.
+    /// </summary>
     [Cil("newarr")]
     public class Newarr : CilInstruction
     {
@@ -17,7 +21,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var size = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);

@@ -7,7 +7,7 @@ namespace Sandbox
     {
         public static void Main()
         {
-            Visualizer.Init(typeof(Main).Assembly, VisualizerState.Standard);
+            Visualizer.Init(typeof(TestingClass).Assembly, VisualizerState.Standard);
             Visualizer.Deserialize();
         }
     }

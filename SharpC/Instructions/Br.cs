@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -6,6 +5,14 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /*
+     * TODO: Merge
+     */
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label.
+    /// </summary>
     [Cil("br")]
     public class Br : CilInstruction
     {
@@ -17,12 +24,11 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack,
-            IList<ScopeInstruction> instructions, MethodBase body, int indite)
+            IList<ScopeInstruction> instructions, MethodBase body)
         {
             var point = _instruction.Operand.Split(':')[0].Split('_')[1];
             var hexIndex = int.Parse(point, NumberStyles.HexNumber);
 
-            Console.WriteLine($"HEX: {hexIndex}");
             var sum = _instruction.Operand.ToCharArray().Aggregate(0, (current, car) => current + car);
             var lbs = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
 
@@ -32,13 +38,13 @@ namespace SharpC.Instructions
 
                 if (Visualizer.FirstPass)
                     Visualizer.Index = instructions.Count + 1;
-                return $"{Visualizer.Tabs}goto {lbs};\n";
+                return $"\tgoto {lbs};\n";
             }
 
             Visualizer.RegisteredLabels.Add(lbs);
 
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add($"{lbs}", new Visualizer.LabelStruct
+            Visualizer.Labels.Add($"{lbs}", new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -64,10 +70,14 @@ namespace SharpC.Instructions
 
             if (Visualizer.FirstPass)
                 Visualizer.Index = instructions.Count + 1;
-            return $"{Visualizer.Tabs}goto {lbs};\n";
+            return $"\tgoto {lbs};\n";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label if true.
+    /// </summary>
     [Cil("brtrue")]
     public class Brtrue : CilInstruction
     {
@@ -79,7 +89,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -88,13 +98,12 @@ namespace SharpC.Instructions
             var hexIndex = int.Parse(point, NumberStyles.HexNumber);
             var sum = _instruction.Operand.ToCharArray().Aggregate(0, (current, car) => current + car);
             var label = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
-            Console.WriteLine($"Contains {Visualizer.Lables.Count} labels");
             if (Visualizer.RegisteredLabels.Contains(label))
-                return $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) == 1) goto {label};\n";
+                return $"\tif ((unsigned int) ({var0.Value}) == 1) goto {label};\n";
 
             Visualizer.RegisteredLabels.Add(label);
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add(label, new Visualizer.LabelStruct
+            Visualizer.Labels.Add(label, new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -118,10 +127,14 @@ namespace SharpC.Instructions
                 }
             }
 
-            return $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) == 1) goto {label};\n";
+            return $"\tif ((unsigned int) ({var0.Value}) == 1) goto {label};\n";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label if false.
+    /// </summary>
     [Cil("brfalse")]
     public class Brfalse : CilInstruction
     {
@@ -133,7 +146,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -143,11 +156,11 @@ namespace SharpC.Instructions
             var sum = _instruction.Operand.ToCharArray().Aggregate(0, (current, car) => current + car);
             var lbs = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
             if (Visualizer.RegisteredLabels.Contains(lbs))
-                return $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) == 0) goto {lbs};\n";
+                return $"\tif ((unsigned int) ({var0.Value}) == 0) goto {lbs};\n";
 
             Visualizer.RegisteredLabels.Add(lbs);
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add($"{lbs}", new Visualizer.LabelStruct
+            Visualizer.Labels.Add($"{lbs}", new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -171,10 +184,14 @@ namespace SharpC.Instructions
                 }
             }
 
-            return $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) == 0) goto {lbs};\n";
+            return $"\tif ((unsigned int) ({var0.Value}) == 0) goto {lbs};\n";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label if bigger than.
+    /// </summary>
     [Cil("bne")]
     public class Bne : CilInstruction
     {
@@ -186,7 +203,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -200,11 +217,11 @@ namespace SharpC.Instructions
             var lbs = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
             if (Visualizer.RegisteredLabels.Contains(lbs))
                 return
-                    $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
+                    $"\tif ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
 
             Visualizer.RegisteredLabels.Add(lbs);
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add($"{lbs}", new Visualizer.LabelStruct
+            Visualizer.Labels.Add($"{lbs}", new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -229,10 +246,14 @@ namespace SharpC.Instructions
             }
 
             return
-                $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) != (unsigned int) ({var1.Value})) goto {lbs};\n";
+                $"\tif ((unsigned int) ({var0.Value}) != (unsigned int) ({var1.Value})) goto {lbs};\n";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label if <=.
+    /// </summary>
     [Cil("bge")]
     public class Bge : CilInstruction
     {
@@ -244,7 +265,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -258,11 +279,11 @@ namespace SharpC.Instructions
             var lbs = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
             if (Visualizer.RegisteredLabels.Contains(lbs))
                 return
-                    $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
+                    $"\tif ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
 
             Visualizer.RegisteredLabels.Add(lbs);
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add($"{lbs}", new Visualizer.LabelStruct
+            Visualizer.Labels.Add($"{lbs}", new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -287,10 +308,14 @@ namespace SharpC.Instructions
             }
 
             return
-                $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
+                $"\tif ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label if <=.
+    /// </summary>
     [Cil("ble")]
     public class Ble : CilInstruction
     {
@@ -302,7 +327,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -316,11 +341,11 @@ namespace SharpC.Instructions
             var lbs = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
             if (Visualizer.RegisteredLabels.Contains(lbs))
                 return
-                    $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
+                    $"\tif ((unsigned int) ({var0.Value}) >= (unsigned int) ({var1.Value})) goto {lbs};\n";
 
             Visualizer.RegisteredLabels.Add(lbs);
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add($"{lbs}", new Visualizer.LabelStruct
+            Visualizer.Labels.Add($"{lbs}", new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -345,10 +370,14 @@ namespace SharpC.Instructions
             }
 
             return
-                $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) >= (unsigned int) ({var1.Value})) goto {lbs};\n";
+                $"\tif ((unsigned int) ({var0.Value}) >= (unsigned int) ({var1.Value})) goto {lbs};\n";
         }
     }
-
+    
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label if >.
+    /// </summary>
     [Cil("blt")]
     public class Blt : CilInstruction
     {
@@ -360,7 +389,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -374,11 +403,11 @@ namespace SharpC.Instructions
             var lbs = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
             if (Visualizer.RegisteredLabels.Contains(lbs))
                 return
-                    $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) <= (unsigned int) ({var1.Value})) goto {lbs};\n";
+                    $"\tif ((unsigned int) ({var0.Value}) > (unsigned int) ({var1.Value})) goto {lbs};\n";
 
             Visualizer.RegisteredLabels.Add(lbs);
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add($"{lbs}", new Visualizer.LabelStruct
+            Visualizer.Labels.Add($"{lbs}", new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -402,10 +431,14 @@ namespace SharpC.Instructions
                 }
             }
 
-            return $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) > (unsigned int) ({var1.Value})) goto {lbs};\n";
+            return $"\tif ((unsigned int) ({var0.Value}) > (unsigned int) ({var1.Value})) goto {lbs};\n";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Branch to label if ==.
+    /// </summary>
     [Cil("beq")]
     public class Beq : CilInstruction
     {
@@ -417,7 +450,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -431,11 +464,11 @@ namespace SharpC.Instructions
             var lbs = $"F{Visualizer.FuncCount}{hexIndex}_{sum}";
             if (Visualizer.RegisteredLabels.Contains(lbs))
                 return
-                    $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) == (unsigned int) ({var1.Value})) goto {lbs};\n";
+                    $"\tif ((unsigned int) ({var0.Value}) == (unsigned int) ({var1.Value})) goto {lbs};\n";
 
             Visualizer.RegisteredLabels.Add(lbs);
             var labelInstructions = new List<ScopeInstruction>();
-            Visualizer.Lables.Add($"{lbs}", new Visualizer.LabelStruct
+            Visualizer.Labels.Add($"{lbs}", new Visualizer.LabelStruct
             {
                 Instructions = labelInstructions
             });
@@ -460,7 +493,7 @@ namespace SharpC.Instructions
             }
 
             return
-                $"{Visualizer.Tabs}if ((unsigned int) ({var0.Value}) == (unsigned int) ({var1.Value})) goto {lbs};\n";
+                $"\tif ((unsigned int) ({var0.Value}) == (unsigned int) ({var1.Value})) goto {lbs};\n";
         }
     }
 }

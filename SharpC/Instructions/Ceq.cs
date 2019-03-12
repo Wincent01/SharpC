@@ -3,11 +3,15 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Test if stack values are equals.
+    /// </summary>
     [Cil("ceq")]
     public class Ceq : CilInstruction
     {
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);

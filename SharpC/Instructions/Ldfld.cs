@@ -4,18 +4,22 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push field variable onto stack.
+    /// </summary>
     [Cil("ldfld")]
     public class Ldfld : CilInstruction
     {
-        public string Field;
+        private string _field;
 
         public override void Serialize(ScopeInstruction template)
         {
-            Field = template.Operand.Split(':')[2];
+            _field = template.Operand.Split(':')[2];
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var obj = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -23,41 +27,45 @@ namespace SharpC.Instructions
             if (body.DeclaringType != null)
                 foreach (var info in body.DeclaringType.GetFields())
                 {
-                    if (info.Name != Field) continue;
+                    if (info.Name != _field) continue;
                     type = CType.Deserialize(info.FieldType);
                     break;
                 }
 
-            Console.WriteLine($"Field {Field} -> {type}");
-            stack.Add(new ScopeVariable {Value = $"{obj.Value}->{Field}", Type = type});
+            Console.WriteLine($"Field {_field} -> {type}");
+            stack.Add(new ScopeVariable {Value = $"{obj.Value}->{_field}", Type = type});
             return "";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Push field variable address onto stack.
+    /// </summary>
     [Cil("ldsfld")]
     public class Ldsfld : CilInstruction
     {
-        public string Field;
+        private string _field;
 
         public override void Serialize(ScopeInstruction template)
         {
-            Field = template.Operand.Split(':')[2];
+            _field = template.Operand.Split(':')[2];
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var type = "void*";
             if (body.DeclaringType != null)
                 foreach (var info in body.DeclaringType.GetFields())
                 {
-                    if (info.Name != Field) continue;
+                    if (info.Name != _field) continue;
                     type = CType.Deserialize(info.FieldType);
                     break;
                 }
 
-            Console.WriteLine($"Field {Field} -> {type}");
-            stack.Add(new ScopeVariable {Value = $"{Field}", Type = type});
+            Console.WriteLine($"Field {_field} -> {type}");
+            stack.Add(new ScopeVariable {Value = $"{_field}", Type = type});
             return "";
         }
     }

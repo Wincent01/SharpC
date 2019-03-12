@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Store type value.
+    /// </summary>
     [Cil("stind")]
     public class Stind : CilInstruction
     {
@@ -14,7 +18,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             stack.Add(new ScopeVariable {Value = Type, Type = Type});
             return "";

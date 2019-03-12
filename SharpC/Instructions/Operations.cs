@@ -3,18 +3,31 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Logical operations.
+    /// </summary>
     public class Operation : CilInstruction
     {
+        /// <summary>
+        /// Logical operation.
+        /// </summary>
         protected virtual string Code => "";
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
+            /*
+             * Collect from stack.
+             */
             var var0 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
             var var1 = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
 
+            /*
+             * Push to stack.
+             */
             stack.Add(new ScopeVariable
             {
                 Value = $"({var1.Value} {Code} {var0.Value})",

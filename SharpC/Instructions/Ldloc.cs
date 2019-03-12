@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push variable value onto the stack.
+    /// </summary>
     [Cil("ldloc")]
     public class Ldloc : CilInstruction
     {
@@ -17,13 +21,17 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack,
-            IList<ScopeInstruction> instructions, MethodBase body, int indite)
+            IList<ScopeInstruction> instructions, MethodBase body)
         {
             stack.Add(Visualizer.Variables[Point]);
             return "";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Push variable reference onto the stack.
+    /// </summary>
     [Cil("ldloca")]
     public class Ldloca : CilInstruction
     {
@@ -43,7 +51,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack,
-            IList<ScopeInstruction> instructions, MethodBase body, int indite)
+            IList<ScopeInstruction> instructions, MethodBase body)
         {
             stack.Add(new ScopeVariable
             {

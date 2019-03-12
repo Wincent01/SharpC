@@ -55,6 +55,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CClass.cs" />
+    <Compile Include="CConstructor.cs" />
+    <Compile Include="CEnum.cs" />
+    <Compile Include="CFunctions.cs" />
     <Compile Include="CMethodCover.cs" />
     <Compile Include="CType.cs" />
     <Compile Include="FileConstruct.cs" />
@@ -95,6 +99,8 @@
     <Compile Include="Instructions\Unbox.cs" />
     <Compile Include="Instructions\Volatile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScopeInstruction.cs" />
+    <Compile Include="ScopeVariable.cs" />
     <Compile Include="Visualizer.cs" />
     <Compile Include="VisualizerState.cs" />
   </ItemGroup>

@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <summary>
+    /// Create new object.
+    /// TODO: This should be a functions call.
+    /// </summary>
     [Cil("newobj")]
     public class Newobj : CilInstruction
     {
@@ -15,7 +19,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var found = false;
             foreach (var type in Visualizer.Types)

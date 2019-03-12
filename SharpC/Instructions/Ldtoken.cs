@@ -3,6 +3,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push type onto stack.
+    /// </summary>
     [Cil("ldtoken")]
     public class Ldtoken : CilInstruction
     {
@@ -15,7 +19,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             stack.Add(new ScopeVariable {Value = Type, Type = Type});
             return "";

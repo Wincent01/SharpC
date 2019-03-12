@@ -4,15 +4,15 @@ using Mono.Cecil.Cil;
 
 namespace SharpC
 {
-    public struct SpecialFunction
-    {
-        public string Value;
-        public uint Parameters;
-    }
-
+    /// <summary>
+    /// Get C types from C# types.
+    /// </summary>
     public static class CType
     {
-        public static readonly Dictionary<Type, string> CBaseTypes = new Dictionary<Type, string>
+        /// <summary>
+        /// Dictionary for primitive types.
+        /// </summary>
+        private static readonly Dictionary<Type, string> CBaseTypes = new Dictionary<Type, string>
         {
             {typeof(sbyte), "signed char"},
             {typeof(byte), "unsigned char"},
@@ -32,9 +32,14 @@ namespace SharpC
             {typeof(double), "double"}
         };
 
-        public static string ResolveConv(string msil)
+        /// <summary>
+        /// Get C type from operand convection code.
+        /// </summary>
+        /// <param name="convCode">Conv code</param>
+        /// <returns></returns>
+        public static string ResolveConv(string convCode)
         {
-            switch (msil)
+            switch (convCode)
             {
                 case "i8":
                     return "signed long long";
@@ -54,12 +59,17 @@ namespace SharpC
                     return "signed int";
                 default:
                 {
-                    Console.WriteLine($"No Converted installed for {msil}");
+                    Console.WriteLine($"No Converted installed for {convCode}");
                     return "void*";
                 }
             }
         }
 
+        /// <summary>
+        /// Get C type from name.
+        /// </summary>
+        /// <param name="obj">Object name</param>
+        /// <returns></returns>
         public static string Deserialize(string obj)
         {
             var dict = new Dictionary<string, string>();
@@ -72,9 +82,7 @@ namespace SharpC
 
                 if (obj.Contains("*")) return $"struct {type.Name.Split('*')[0]}*";
 
-                if (obj.Contains("&")) return $"struct {type.Name.Split('&')[0]}";
-
-                return $"struct {type.Name}*";
+                return obj.Contains("&") ? $"struct {type.Name.Split('&')[0]}" : $"struct {type.Name}*";
             }
 
             try
@@ -91,6 +99,11 @@ namespace SharpC
             }
         }
 
+        /// <summary>
+        /// Get C type from variable def.
+        /// </summary>
+        /// <param name="obj">Type definition</param>
+        /// <returns></returns>
         public static string Deserialize(VariableDefinition obj)
         {
             if (!obj.VariableType.IsGenericInstance && !obj.VariableType.IsGenericParameter)
@@ -101,6 +114,11 @@ namespace SharpC
                 $"void*{(obj.VariableType.IsArray || obj.VariableType.IsPointer || obj.VariableType.IsByReference ? "*" : "")}";
         }
 
+        /// <summary>
+        /// Get C type from type.
+        /// </summary>
+        /// <param name="obj">Object type</param>
+        /// <returns></returns>
         public static string Deserialize(Type obj)
         {
             if (obj.IsGenericType || obj.IsGenericParameter || obj.IsGenericTypeDefinition || obj.Name.Contains("<") ||

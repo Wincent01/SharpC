@@ -5,6 +5,10 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Push value of argument onto stack.
+    /// </summary>
     [Cil("ldarg")]
     public class Ldarg : CilInstruction
     {
@@ -25,7 +29,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             stack.Add(new ScopeVariable
             {
@@ -34,11 +38,14 @@ namespace SharpC.Instructions
                 Type = body.IsStatic ? CType.Deserialize(body.GetParameters()[_at].ParameterType) :
                     _at == 0 ? "void*" : CType.Deserialize(body.GetParameters()[_at - 1].ParameterType)
             });
-            Console.WriteLine($"Parameter -> {stack[stack.Count - 1].Value} with {_at}");
             return "";
         }
     }
 
+    /// <inheritdoc />
+    /// <summary>
+    /// Push value address of argument onto stack.
+    /// </summary>
     [Cil("ldarga")]
     public class Ldarga : CilInstruction
     {
@@ -50,7 +57,7 @@ namespace SharpC.Instructions
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             stack.Add(new ScopeVariable
             {

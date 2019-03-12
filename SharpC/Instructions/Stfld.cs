@@ -4,18 +4,22 @@ using System.Reflection;
 
 namespace SharpC.Instructions
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// Set field variable value.
+    /// </summary>
     [Cil("stfld")]
     public class Stfld : CilInstruction
     {
-        public string Field;
+        private string _field;
 
         public override void Serialize(ScopeInstruction template)
         {
-            Field = template.Operand.Split(':')[2];
+            _field = template.Operand.Split(':')[2];
         }
 
         public override string Deserialize(IList<ScopeVariable> stack, IList<ScopeInstruction> instructions,
-            MethodBase body, int indite)
+            MethodBase body)
         {
             var value = stack[stack.Count - 1];
             stack.RemoveAt(stack.Count - 1);
@@ -25,13 +29,13 @@ namespace SharpC.Instructions
             if (body.DeclaringType != null)
                 foreach (var info in body.DeclaringType.GetFields())
                 {
-                    if (info.Name != Field) continue;
+                    if (info.Name != _field) continue;
                     type = CType.Deserialize(info.FieldType);
                     break;
                 }
 
-            Console.WriteLine($"Field {Field} -> {type}");
-            return $"{Visualizer.Tabs}{obj.Value}->{Field} = {value.Value};\n";
+            Console.WriteLine($"Field {_field} -> {type}");
+            return $"\t{obj.Value}->{_field} = {value.Value};\n";
         }
     }
 }
